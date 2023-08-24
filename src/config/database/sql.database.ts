@@ -3,13 +3,10 @@ import { Sequelize } from 'sequelize-typescript';
 import { CoreTypes } from '../../@types/core';
 import Settings from '../settings';
 import sqlModels from './sql.models';
-import LoggerUtil from '../../modules/core/utils/logger.util';
 import SQLDBConfigType = CoreTypes.SQLDBConfigType;
 import EnvType = CoreTypes.EnvType;
 
 export class SQLDatabase {
-  private static logger = LoggerUtil.init(SQLDatabase.name).logger;
-
   private static _sequelize: Sequelize;
 
   public static get sequelize(): Sequelize {
@@ -56,7 +53,7 @@ export class SQLDatabase {
         paranoid: true,
         freezeTableName: true,
       },
-      logging: (sql) => this.logger.debug(sql),
+      logging: false,
     });
   }
 }

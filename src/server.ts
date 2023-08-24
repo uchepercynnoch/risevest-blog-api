@@ -1,4 +1,10 @@
-import 'dotenv/config';
-import start from './modules/core/start';
+import http from 'http';
 
-void start();
+import 'dotenv/config';
+
+import start from './modules/core/start';
+import app from './app';
+
+const server = http.createServer(app);
+
+void start(server);

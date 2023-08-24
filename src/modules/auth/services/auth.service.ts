@@ -4,6 +4,7 @@ import { sign } from 'jsonwebtoken';
 import User from '../../users/models/user.model';
 import EnvType = CoreTypes.EnvType;
 import JwtConfigType = CoreTypes.JwtConfigType;
+import IAppJwtPayload = CoreTypes.IAppJwtPayload;
 
 export default class AuthService {
   constructor(private readonly settings: Settings) {}
@@ -13,6 +14,10 @@ export default class AuthService {
 
     const configType = this.settings.get('jwt', env) as JwtConfigType;
 
-    return sign({ id: user.id }, configType.secret, { expiresIn: configType.expiry });
+    const payload: IAppJwtPayload = {
+      id: user.id,
+    };
+
+    return sign(payload, configType.secret, { expiresIn: configType.expiry });
   }
 }

@@ -1,5 +1,5 @@
 import { CoreTypes } from '../../../@types/core';
-import { fakeSuperUser } from '../../../resources/fake';
+import { createFakeUsersFactory } from '../../../resources/fake';
 import AbstractCrudRepository = CoreTypes.AbstractCrudRepository;
 
 export default class SeedUtil {
@@ -13,6 +13,9 @@ export default class SeedUtil {
     const user = await this.userRepository.findById(1);
 
     if (user) return;
+
+    const fakeSuperUser = createFakeUsersFactory();
+
     await this.userRepository.save(fakeSuperUser);
   }
 }

@@ -5,6 +5,8 @@ import HttpStatus from '../../core/helpers/http-status.helper';
 import { LoginDto } from '../dto/auth.dto';
 import CustomApiException from '../../core/exceptions/custom-api.exception';
 import { CoreTypes } from '../../../@types/core';
+import Joi from 'joi';
+import { loginSchema } from '../validation/auth.schema';
 import HttpResponseType = CoreTypes.HttpResponseType;
 
 export default class AuthController {
@@ -14,9 +16,12 @@ export default class AuthController {
   ) {}
 
   public async login(req: Request): Promise<HttpResponseType<string>> {
-    const { userId = 1 } = req.body as LoginDto; //always login super admin
+    const { error, value } = Joi.object<LoginDto>(loginSchema()).validate(req.body);
 
-    const user = await this.userService.findById(userId);
+    if (error)
+      return Promise.reject(CustomApiException.response(error.details[0].message, HttpStatus.UNAUTHORIZED.code));
+
+    const user = await this.userService.findById(value?.userId);
 
     if (!user)
       return Promise.reject(CustomApiException.response(HttpStatus.UNAUTHORIZED.value, HttpStatus.UNAUTHORIZED.code));
