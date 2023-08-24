@@ -1,4 +1,5 @@
 export class CreatePostDto {
+  declare id?: number;
   declare title: string;
 }
 

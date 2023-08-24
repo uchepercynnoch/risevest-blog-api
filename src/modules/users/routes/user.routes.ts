@@ -61,6 +61,12 @@ export const createUserRouteHandler = RoutesAuthenticatorMiddleware.authenticate
  *      required: true
  *      description: Create User Post
  *   tags: [Users]
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/definitions/AddPost'
  *   responses:
  *    200:
  *     description: OK

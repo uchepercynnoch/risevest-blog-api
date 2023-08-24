@@ -61,6 +61,12 @@ export const createPostRouteHandler = RoutesAuthenticatorMiddleware.authenticate
  *      required: true
  *      description: Create Post Comment
  *   tags: [Posts]
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/definitions/AddComment'
  *   responses:
  *    200:
  *     description: OK

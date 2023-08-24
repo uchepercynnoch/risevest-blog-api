@@ -6,10 +6,19 @@ definitions:
     properties:
       userId:
         type: number
+
   CreateUser:
     type: object
     required:
       - name
     properties:
       name:
+        type: string
+
+  AddPost:
+    type: object
+    required:
+      - title
+    properties:
+      title:
         type: string

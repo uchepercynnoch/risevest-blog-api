@@ -1,4 +1,4 @@
-import { createPostRouteHandler, getPostsRouteHandler } from '../routes/post.routes';
+import { createPostCommentRouteHandler, createPostRouteHandler, getPostsRouteHandler } from '../routes/post.routes';
 import { CoreTypes } from '../../../@types/core';
 import RouteEndpointsType = CoreTypes.RouteEndpointsType;
 
@@ -14,6 +14,12 @@ const postEndpoints: RouteEndpointsType = [
     path: '/posts',
     method: 'get',
     handler: getPostsRouteHandler,
+  },
+  {
+    name: 'Create Post Comment',
+    path: '/posts/:postId/comments',
+    method: 'put',
+    handler: createPostCommentRouteHandler,
   },
 ];
 

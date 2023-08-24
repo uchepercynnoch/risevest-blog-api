@@ -5,6 +5,9 @@ import { CoreTypes } from '../../../@types/core';
 import Post from '../models/post.model';
 import CustomApiException from '../../core/exceptions/custom-api.exception';
 import CommentsService from '../../comments/services/comments.service';
+import Joi from 'joi';
+import { addCommentSchema, createPostSchema } from '../validation/posts.schema';
+import HttpStatus from '../../core/helpers/http-status.helper';
 import Comment from '../../comments/models/comment.model';
 import HttpResponseType = CoreTypes.HttpResponseType;
 
@@ -15,51 +18,62 @@ export default class PostController {
   ) {}
 
   public async create(req: Request): Promise<HttpResponseType<Post>> {
-    const createPostDto = req.body as CreatePostDto;
+    const { value, error } = Joi.object<CreatePostDto>(createPostSchema()).validate(req.body);
 
-    const postExist = await this.postService.FIND_BY_TITLE(createPostDto.title);
+    if (error)
+      return Promise.reject(CustomApiException.response(error.details[0].message, HttpStatus.BAD_REQUEST.code));
+
+    const postExist = await this.postService.FIND_BY_TITLE(value.title);
 
     if (postExist)
-      return Promise.reject(CustomApiException.response(`Post with title ${createPostDto.title} already exist`, 400));
+      return Promise.reject(
+        CustomApiException.response(`Post with title ${value.title} already exist`, HttpStatus.CONFLICT.code),
+      );
 
-    const post = await this.postService.CREATE(createPostDto);
+    const post = await this.postService.CREATE(value);
 
     return Promise.resolve({
-      code: 201,
-      message: 'Created',
+      code: HttpStatus.CREATED.code,
+      message: HttpStatus.CREATED.value,
       timestamp: new Date().toDateString(),
       result: post,
     });
   }
 
   public async addComment(req: Request): Promise<HttpResponseType<Post>> {
+    const { value, error } = Joi.object<AddCommentDto>(addCommentSchema()).validate(req.body);
+
+    if (error)
+      return Promise.reject(CustomApiException.response(error.details[0].message, HttpStatus.BAD_REQUEST.code));
+
     const postId = req.params.postId;
-    const addPostDto = req.body as AddCommentDto;
 
-    const post = await this.postService.FIND_BY_ID(parseInt(postId), {
-      include: [{ model: Comment }],
-    });
+    const post = await this.postService.FIND_BY_ID(parseInt(postId));
 
-    if (!post) return Promise.reject(CustomApiException.response(`Post not found`, 404));
+    if (!post) return Promise.reject(CustomApiException.response(`Post not found`, HttpStatus.NOT_FOUND.code));
 
     const comment = await this.commentsService.CREATE({
-      content: addPostDto.comment,
+      content: value.comment,
     });
 
-    await post.$add('comments', comment);
+    await post.$add('comments', [comment]);
 
     return Promise.resolve({
-      code: 201,
-      message: 'Created',
+      code: HttpStatus.ACCEPTED.code,
+      message: HttpStatus.ACCEPTED.value,
       timestamp: new Date().toDateString(),
-      result: post,
+      result: await this.postService.FIND_BY_ID(parseInt(postId), {
+        include: [Comment],
+        raw: false,
+        plain: true,
+      }),
     });
   }
 
   public async posts(): Promise<HttpResponseType<Post>> {
     return Promise.resolve({
-      code: 200,
-      message: 'Ok',
+      code: HttpStatus.OK.code,
+      message: HttpStatus.OK.value,
       timestamp: new Date().toDateString(),
       results: await this.postService.FIND_ALL(),
     });

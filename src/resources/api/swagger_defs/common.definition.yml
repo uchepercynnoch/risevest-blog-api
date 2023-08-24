@@ -8,6 +8,7 @@ definitions:
         type: string
       timestamp:
         type: string
+
   SuccessResponse:
     type: object
     properties:

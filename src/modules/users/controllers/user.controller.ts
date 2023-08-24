@@ -6,6 +6,9 @@ import User from '../models/user.model';
 import CustomApiException from '../../core/exceptions/custom-api.exception';
 import PostService from '../../posts/services/post.service';
 import Post from '../../posts/models/post.model';
+import Joi from 'joi';
+import { addPostSchema, createUserSchema } from '../validation/users.schema';
+import HttpStatus from '../../core/helpers/http-status.helper';
 import HttpResponseType = CoreTypes.HttpResponseType;
 
 export default class UserController {
@@ -15,55 +18,66 @@ export default class UserController {
   ) {}
 
   public async create(req: Request): Promise<HttpResponseType<User>> {
-    const createUserDto = req.body as CreateUserDto;
+    const { error, value } = Joi.object<CreateUserDto>(createUserSchema()).validate(req.body);
 
-    const userExist = await this.userService.FIND_BY_NAME(createUserDto.name);
+    if (error)
+      return Promise.reject(CustomApiException.response(error.details[0].message, HttpStatus.BAD_REQUEST.code));
+
+    const userExist = await this.userService.FIND_BY_NAME(value?.name);
 
     if (userExist)
-      return Promise.reject(CustomApiException.response(`User with name ${createUserDto.name} already exist`, 400));
+      return Promise.reject(
+        CustomApiException.response(`User with name ${value?.name} already exist`, HttpStatus.CONFLICT.code),
+      );
 
-    const user = await this.userService.CREATE(createUserDto);
+    const user = await this.userService.CREATE(value);
 
     return Promise.resolve({
-      code: 201,
-      message: 'Created',
+      code: HttpStatus.CREATED.code,
+      message: HttpStatus.CREATED.value,
       timestamp: new Date().toDateString(),
       result: user,
     });
   }
 
   public async addPost(req: Request): Promise<HttpResponseType<User>> {
-    const userId = req.params.userId;
-    const addPostDto = req.body as AddPostDto;
+    const { error, value } = Joi.object<AddPostDto>(addPostSchema()).validate(req.body);
 
-    const user = await this.userService.FIND_BY_ID(parseInt(userId), {
-      include: [{ model: Post }],
-    });
+    if (error)
+      return Promise.reject(CustomApiException.response(error.details[0].message, HttpStatus.BAD_REQUEST.code));
 
-    if (!user) return Promise.reject(CustomApiException.response(`User not found`, 404));
+    const userId = req.params.id;
 
-    let post = await this.postService.FIND_BY_TITLE(addPostDto.title);
+    const user = await this.userService.FIND_BY_ID(parseInt(userId));
+
+    if (!user) return Promise.reject(CustomApiException.response(`User not found`, HttpStatus.NOT_FOUND.code));
+
+    let post = await this.postService.FIND_BY_TITLE(value.title);
 
     if (!post) {
       post = await this.postService.CREATE({
-        title: addPostDto.title,
+        title: value.title,
       });
     }
 
-    await user.$add('posts', post);
+    await user.$add('posts', [post]);
 
     return Promise.resolve({
-      code: 201,
-      message: 'Created',
+      code: HttpStatus.ACCEPTED.code,
+      message: HttpStatus.ACCEPTED.value,
       timestamp: new Date().toDateString(),
-      result: user,
+      result: await this.userService.FIND_BY_ID(parseInt(userId), {
+        include: [{ model: Post }],
+        raw: false,
+        plain: true,
+      }),
     });
   }
 
   public async users(): Promise<HttpResponseType<User>> {
     return Promise.resolve({
-      code: 200,
-      message: 'Ok',
+      code: HttpStatus.OK.code,
+      message: HttpStatus.OK.value,
       timestamp: new Date().toDateString(),
       results: await this.userService.FIND_ALL(),
     });

@@ -1,4 +1,12 @@
 definitions:
+  AddComment:
+    type: object
+    required:
+      - comment
+    properties:
+      comment:
+        type: string
+
   CreatePost:
     type: object
     required:

@@ -8,7 +8,7 @@ import { SQLDatabase } from '../../src/config/database/sql.database';
 import { Sequelize } from 'sequelize-typescript';
 import HttpStatus from '../../src/modules/core/helpers/http-status.helper';
 import SeedUtil from '../../src/modules/core/utils/seed.util';
-import UserRepository from '../../src/modules/users/repositories/user.repository';
+
 import { CoreTypes } from '../../src/@types/core';
 import Settings from '../../src/config/settings';
 import { verify } from 'jsonwebtoken';
@@ -34,7 +34,7 @@ describe('AuthModule', () => {
 
     await sequelize.sync({ logging: false });
 
-    const seedUtil = new SeedUtil(new UserRepository());
+    const seedUtil = new SeedUtil();
 
     await seedUtil.run();
 

@@ -5,7 +5,7 @@ import RouteEndpointsType = CoreTypes.RouteEndpointsType;
 const commentsEndpoints: RouteEndpointsType = [
   {
     name: 'Get Comments',
-    path: '/posts',
+    path: '/comments',
     method: 'get',
     handler: getCommentsRouteHandler,
   },

@@ -4,7 +4,6 @@ import Settings from '../../../config/settings';
 import LoggerUtil from '../utils/logger.util';
 import * as util from 'util';
 import SeedUtil from '../utils/seed.util';
-import UserRepository from '../../users/repositories/user.repository';
 
 export default async function start(server: Server) {
   const logger = LoggerUtil.init(start.name).logger;
@@ -18,7 +17,7 @@ export default async function start(server: Server) {
 
     await sqlDB.sequelize.sync({ force: true, logging: false });
 
-    const seedUtil = new SeedUtil(new UserRepository());
+    const seedUtil = new SeedUtil();
 
     await seedUtil.run();
 

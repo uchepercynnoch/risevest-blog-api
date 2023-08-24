@@ -13,7 +13,7 @@ export default class GlobalExceptionHandlerMiddleware {
 
     const response: HttpResponseType<null> = {
       code: 500,
-      message: 'An error occurred.Contact support',
+      message: 'An error occurred. Contact support',
       timestamp: new Date().toDateString(),
     };
 
