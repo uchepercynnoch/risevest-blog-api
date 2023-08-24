@@ -1,5 +1,5 @@
 declare namespace NodeJS {
-  import { CoreTypes } from "./core";
+  import { CoreTypes } from './core';
   import EnvType = CoreTypes.EnvType;
 
   interface ProcessEnv {
