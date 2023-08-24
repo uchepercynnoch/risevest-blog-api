@@ -18,8 +18,8 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -58,13 +58,11 @@ jobs:
       - name: Run Tests
         run: npm run test
         env:
-          TEST_DB_HOST: ${{ secrets.TEST_DB_HOST }}
-          TEST_DB_USER: ${{ secrets.TEST_DB_USER }}
-          TEST_DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
-          TEST_DB_DATABASE: ${{ secrets.TEST_DB_DATABASE }}
-          TEST_DB_PORT: ${{ secrets.TEST_DB_PORT}}
-          TEST_DB_DIALECT: ${{ secrets.TEST_DB_DIALECT }}
-          DEV_JWT_SECRET: ${{ secrets.DEV_JWT_SECRET }}
-          DEV_JWT_EXPIRY: ${{ secrets.DEV_JWT_EXPIRY }}
-          TEST_JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
-          TEST_JWT_EXPIRY: ${{ secrets.TEST_JWT_EXPIRY }}
+          TEST_DB_HOST: postgresDB
+          TEST_DB_USER: admin
+          TEST_DB_PASSWORD: admin
+          TEST_DB_DATABASE: postgres
+          TEST_DB_PORT: 5432
+          TEST_DB_DIALECT: postgres
+          TEST_JWT_SECRET: my_test_jwt_secret
+          TEST_JWT_EXPIRY: 1h

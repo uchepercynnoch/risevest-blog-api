@@ -8,6 +8,7 @@ import HttpResponseType = CoreTypes.HttpResponseType;
 export default class GlobalExceptionHandlerMiddleware {
   public static handle(err: Error, _: Request, res: Response, next: NextFunction) {
     const logger = LoggerUtil.init(GlobalExceptionHandlerMiddleware.name).logger;
+
     if (res.headersSent) return next(err);
 
     const response: HttpResponseType<null> = {
@@ -17,8 +18,6 @@ export default class GlobalExceptionHandlerMiddleware {
     };
 
     if (err instanceof CustomApiException) {
-      logger.error(util.inspect(err));
-
       response.code = err.code;
       response.message = err.message;
 
@@ -26,21 +25,21 @@ export default class GlobalExceptionHandlerMiddleware {
     }
 
     process.on('uncaughtException', (error) => {
-      logger.error(util.inspect(error));
+      if (process.env.NODE_ENV !== 'test') logger.error(util.inspect(error));
 
       response.message = error.message;
       return res.status(response.code).json(response);
     });
 
     process.on('unhandledRejection', (reason) => {
-      logger.error(util.inspect(reason));
+      if (process.env.NODE_ENV !== 'test') logger.error(util.inspect(reason));
 
       response.message = reason as string;
 
       return res.status(response.code).json(response);
     });
 
-    logger.error(util.inspect(err));
+    if (process.env.NODE_ENV !== 'test') logger.error(util.inspect(err));
 
     return res.status(response.code).json(response);
   }
