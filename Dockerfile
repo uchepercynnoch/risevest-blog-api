@@ -15,7 +15,7 @@ RUN yarn install --immutable --immutable-cache --check-cache
 
 COPY . .
 
-RUN mv docker.env ./.env
+#RUN mv docker.env ./.env
 
 USER node
 
