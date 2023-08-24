@@ -1,0 +1,8 @@
+definitions:
+  CreatePost:
+    type: object
+    required:
+      - title
+    properties:
+      title:
+        type: string

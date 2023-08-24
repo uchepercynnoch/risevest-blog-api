@@ -1,0 +1,24 @@
+definitions:
+  Id:
+    type: number
+  ErrorResponse:
+    type: object
+    properties:
+      code:
+        type: number
+      message:
+        type: string
+  SuccessResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      timestamp:
+        type: string
+      result:
+        type: object
+      results:
+        type: array
+        items: {}

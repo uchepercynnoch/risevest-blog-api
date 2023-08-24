@@ -1,0 +1,7 @@
+tags:
+  - name: Users
+    description: Blog Users
+  - name: Posts
+    description: Blog Posts
+  - name: Comments
+    description: Blog Comments
