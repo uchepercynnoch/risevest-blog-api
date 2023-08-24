@@ -1,3 +1,5 @@
+import { JwtPayload } from 'jsonwebtoken';
+
 export declare namespace CoreTypes {
   import type { NextFunction, Request, Response } from 'express';
   import type {
@@ -31,9 +33,16 @@ export declare namespace CoreTypes {
     database: number;
   };
 
+  interface IAppJwtPayload extends JwtPayload {
+    id: number;
+  }
+
+  type JwtConfigType = { secret: string; expiry: string | number };
+
   type SettingsConfigType = {
     postgres: Record<EnvType, SQLDBConfigType>;
     redis: Record<EnvType, NoSQLDBConfigType>;
+    jwt: Record<EnvType, JwtConfigType>;
   };
 
   type ModelInstance<M> = new () => M;

@@ -5,7 +5,7 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 import { ConsoleTransportInstance } from 'winston/lib/winston/transports';
 import { LOG_LEVEL_COLOR } from '../constants';
 
-export default class AppLoggerUtil {
+export default class LoggerUtil {
   private readonly module: string;
   private readonly transports: ConsoleTransportInstance | DailyRotateFile;
 
@@ -22,7 +22,7 @@ export default class AppLoggerUtil {
   }
 
   public static init(module: string) {
-    return new AppLoggerUtil(module);
+    return new LoggerUtil(module);
   }
 
   private createLogger() {

@@ -1,7 +1,7 @@
 import http from 'http';
 import { SQLDatabase } from '../../../config/database/sql.database';
 import Settings from '../../../config/settings';
-import AppLoggerUtil from '../utils/app-logger.util';
+import LoggerUtil from '../utils/logger.util';
 import * as util from 'util';
 import express from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -11,9 +11,11 @@ import cors from 'cors';
 import { serve, setup } from 'swagger-ui-express';
 import GlobalExceptionHandlerMiddleware from '../middleware/global-exception-handler.middleware';
 import routes from '../../../config/api/routes';
+import SeedUtil from '../utils/seed.util';
+import UserRepository from '../../users/repositories/user.repository';
 
 export default async function start() {
-  const logger = AppLoggerUtil.init(start.name).logger;
+  const logger = LoggerUtil.init(start.name).logger;
 
   try {
     const PORT = process.env.PORT ?? 5050;
@@ -24,11 +26,16 @@ export default async function start() {
 
     await sqlDB.sequelize.sync({ force: true });
 
+    const seedUtil = new SeedUtil(new UserRepository());
+
+    await seedUtil.run();
+
     const app = express();
     const server = http.createServer(app);
 
     const openapiSpecification = swaggerJsdoc(swaggerDoc);
 
+    app.use(express.json());
     app.use(morgan('dev'));
     app.use(cors());
 

@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
-
 import UserController from '../controllers/user.controller';
 import UserService from '../services/user.service';
 import PostService from '../../posts/services/post.service';
+import RoutesAuthenticatorMiddleware from '../../core/middleware/routes-authenticator.middleware';
 
 const userController = new UserController(new UserService(), new PostService());
 
@@ -44,11 +43,11 @@ const userController = new UserController(new UserService(), new PostService());
  *        schema:
  *          $ref: '#/definitions/ErrorResponse'
  */
-export const createUserRouteHandler = async (req: Request, res: Response) => {
+export const createUserRouteHandler = RoutesAuthenticatorMiddleware.authenticate(async (req, res) => {
   const response = await userController.create(req);
 
   res.status(response.code).json(response);
-};
+});
 
 /**
  * @swagger
@@ -88,11 +87,11 @@ export const createUserRouteHandler = async (req: Request, res: Response) => {
  *        schema:
  *          $ref: '#/definitions/ErrorResponse'
  */
-export const createUserPostRouteHandler = async (req: Request, res: Response) => {
+export const createUserPostRouteHandler = RoutesAuthenticatorMiddleware.authenticate(async (req, res) => {
   const response = await userController.addPost(req);
 
   res.status(response.code).json(response);
-};
+});
 
 /**
  * @swagger
@@ -126,8 +125,8 @@ export const createUserPostRouteHandler = async (req: Request, res: Response) =>
  *        schema:
  *          $ref: '#/definitions/ErrorResponse'
  */
-export const getUsersRouteHandler = async (_: Request, res: Response) => {
+export const getUsersRouteHandler = RoutesAuthenticatorMiddleware.authenticate(async (_, res) => {
   const response = await userController.users();
 
   res.status(response.code).json(response);
-};
+});

@@ -1,12 +1,12 @@
 definitions:
-  Id:
-    type: number
   ErrorResponse:
     type: object
     properties:
       code:
         type: number
       message:
+        type: string
+      timestamp:
         type: string
   SuccessResponse:
     type: object

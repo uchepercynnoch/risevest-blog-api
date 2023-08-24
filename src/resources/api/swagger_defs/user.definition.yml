@@ -1,4 +1,11 @@
 definitions:
+  LoginUser:
+    type: object
+    required:
+      - userId
+    properties:
+      userId:
+        type: number
   CreateUser:
     type: object
     required:

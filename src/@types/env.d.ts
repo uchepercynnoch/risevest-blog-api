@@ -31,5 +31,11 @@ declare namespace NodeJS {
     TEST_REDIS_PASSWORD?: string;
     TEST_REDIS_DATABASE?: string;
     TEST_REDIS_PORT?: string;
+
+    DEV_JWT_SECRET?: string;
+    DEV_JWT_EXPIRY?: string;
+
+    TEST_JWT_SECRET?: string;
+    TEST_JWT_EXPIRY?: string;
   }
 }

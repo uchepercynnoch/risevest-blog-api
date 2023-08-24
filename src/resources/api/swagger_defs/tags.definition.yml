@@ -5,3 +5,5 @@ tags:
     description: Blog Posts
   - name: Comments
     description: Blog Comments
+  - name: Auth
+    description: Blog Auth

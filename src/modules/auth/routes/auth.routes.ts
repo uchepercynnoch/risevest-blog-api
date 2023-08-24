@@ -1,17 +1,26 @@
 import { Request, Response } from 'express';
+import AuthController from '../controllers/auth.controller';
+import AuthService from '../services/auth.service';
+import Settings from '../../../config/settings';
+import UserService from '../../users/services/user.service';
 
-import CommentsController from '../controllers/comments.controller';
-import CommentsService from '../services/comments.service';
-import RoutesAuthenticatorMiddleware from '../../core/middleware/routes-authenticator.middleware';
+const authService = new AuthService(new Settings());
+const userService = new UserService();
 
-const commentsController = new CommentsController(new CommentsService());
+const authController = new AuthController(authService, userService);
 
 /**
  * @swagger
- * /api/v1/comments:
- *  get:
- *   description: Fetch all Comments
- *   tags: [Comments]
+ * /api/v1/login:
+ *  post:
+ *   description: Login new User
+ *   tags: [Auth]
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/definitions/LoginUser'
  *   responses:
  *    200:
  *     description: OK
@@ -38,8 +47,8 @@ const commentsController = new CommentsController(new CommentsService());
  *        schema:
  *          $ref: '#/definitions/ErrorResponse'
  */
-export const getCommentsRouteHandler = RoutesAuthenticatorMiddleware.authenticate(async (_: Request, res: Response) => {
-  const response = await commentsController.comments();
+export const loginUserRouteHandler = async (req: Request, res: Response) => {
+  const response = await authController.login(req);
 
   res.status(response.code).json(response);
-});
+};

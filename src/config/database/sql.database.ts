@@ -3,12 +3,12 @@ import { Sequelize } from 'sequelize-typescript';
 import { CoreTypes } from '../../@types/core';
 import Settings from '../settings';
 import sqlModels from './sql.models';
-import AppLoggerUtil from '../../modules/core/utils/app-logger.util';
+import LoggerUtil from '../../modules/core/utils/logger.util';
 import SQLDBConfigType = CoreTypes.SQLDBConfigType;
 import EnvType = CoreTypes.EnvType;
 
 export class SQLDatabase {
-  private static logger = AppLoggerUtil.init(SQLDatabase.name).logger;
+  private static logger = LoggerUtil.init(SQLDatabase.name).logger;
 
   private static _sequelize: Sequelize;
 

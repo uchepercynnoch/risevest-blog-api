@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
-
 import PostController from '../controllers/post.controller';
 import PostService from '../services/post.service';
 import CommentsService from '../../comments/services/comments.service';
+import RoutesAuthenticatorMiddleware from '../../core/middleware/routes-authenticator.middleware';
 
 const postController = new PostController(new PostService(), new CommentsService());
 
@@ -44,11 +43,11 @@ const postController = new PostController(new PostService(), new CommentsService
  *        schema:
  *          $ref: '#/definitions/ErrorResponse'
  */
-export const createPostRouteHandler = async (req: Request, res: Response) => {
+export const createPostRouteHandler = RoutesAuthenticatorMiddleware.authenticate(async (req, res) => {
   const response = await postController.create(req);
 
   res.status(response.code).json(response);
-};
+});
 
 /**
  * @swagger
@@ -88,11 +87,11 @@ export const createPostRouteHandler = async (req: Request, res: Response) => {
  *        schema:
  *          $ref: '#/definitions/ErrorResponse'
  */
-export const createPostCommentRouteHandler = async (req: Request, res: Response) => {
+export const createPostCommentRouteHandler = RoutesAuthenticatorMiddleware.authenticate(async (req, res) => {
   const response = await postController.addComment(req);
 
   res.status(response.code).json(response);
-};
+});
 
 /**
  * @swagger
@@ -126,8 +125,8 @@ export const createPostCommentRouteHandler = async (req: Request, res: Response)
  *        schema:
  *          $ref: '#/definitions/ErrorResponse'
  */
-export const getPostsRouteHandler = async (_: Request, res: Response) => {
+export const getPostsRouteHandler = RoutesAuthenticatorMiddleware.authenticate(async (_, res) => {
   const response = await postController.posts();
 
   res.status(response.code).json(response);
-};
+});

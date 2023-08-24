@@ -4,7 +4,7 @@ import EnvType = CoreTypes.EnvType;
 import SettingsConfigType = CoreTypes.SettingsConfigType;
 
 export default class Settings {
-  private settings: SettingsConfigType;
+  private readonly settings: SettingsConfigType;
 
   constructor() {
     this.settings = {
@@ -37,6 +37,10 @@ export default class Settings {
           host: process.env.TEST_DB_HOST as string,
           port: parseInt(process.env.TEST_REDIS_PORT as string),
         },
+      },
+      jwt: {
+        development: { secret: process.env.DEV_JWT_SECRET as string, expiry: process.env.DEV_JWT_EXPIRY as string },
+        test: { secret: process.env.TEST_JWT_SECRET as string, expiry: process.env.TEST_JWT_EXPIRY as string },
       },
     };
   }
