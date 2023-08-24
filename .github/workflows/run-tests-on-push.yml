@@ -13,7 +13,7 @@ jobs:
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
-      postgresDB:
+      postgres:
         # Docker Hub image
         image: postgres
         # Provide the password for postgres
@@ -58,7 +58,7 @@ jobs:
       - name: Run Tests
         run: npm run test
         env:
-          TEST_DB_HOST: postgresDB
+          TEST_DB_HOST: localhost
           TEST_DB_USER: admin
           TEST_DB_PASSWORD: admin
           TEST_DB_DATABASE: postgres
